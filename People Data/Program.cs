@@ -16,7 +16,8 @@ namespace People_Data
             DirectoryInfo directory = new DirectoryInfo(currentDirectory);
             var fileName = Path.Combine(directory.FullName, "People.json");
             var people = DeserializePeople(fileName);
-            foreach (var person in people)
+            var peopleFromTN = GetPeopleFromState(people, "TN");
+            foreach (var person in peopleFromTN)
             {
                 Console.WriteLine("Name: " + person.FirstName + " " + person.LastName);
                 Console.WriteLine("Birthday: " + person.BirthDate.Date.ToString("d"));
@@ -26,7 +27,8 @@ namespace People_Data
                 Console.WriteLine();
             }
             Console.ReadLine();
-            
+            fileName = Path.Combine(directory.FullName, "TN.json");
+            SerializePeopleToFile(peopleFromTN, fileName);
         }
 
         public static List<Person> DeserializePeople (string fileName)
@@ -39,6 +41,30 @@ namespace People_Data
                 people = serializer.Deserialize< List<Person> > (jsonReader);
             }
                 return people; 
+        }
+
+        public static List<Person> GetPeopleFromState(List<Person> people, string state)
+        {
+            var peopleFromQueriedState = new List<Person>();
+            foreach (var person in people)
+            {
+                if (person.State == state)
+                {
+                    peopleFromQueriedState.Add(person);
+
+                }
+            }
+            return peopleFromQueriedState;
+        }
+
+        public static void SerializePeopleToFile(List<Person> people, string fileName)
+        {
+            var serializer = new JsonSerializer();
+            using (var writer = new StreamWriter(fileName))
+            using (var jsonWriter = new JsonTextWriter(writer))
+            {
+                serializer.Serialize(jsonWriter, people);
+            }
         }
     }
 }
