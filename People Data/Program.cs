@@ -26,7 +26,7 @@ namespace People_Data
                 Console.WriteLine();
             }
             Console.ReadLine();
-
+            
         }
 
         public static List<Person> DeserializePeople (string fileName)
